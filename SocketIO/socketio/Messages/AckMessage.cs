@@ -8,6 +8,7 @@ namespace SocketIOClient.Messages
 {
 	public sealed class AckMessage : Message
 	{
+    #pragma warning disable 0414
 		private static Regex reAckId = new Regex(@"^(\d{1,})");
  		private static Regex reAckPayload = new Regex(@"(?:[\d\+]*)(?<data>.*)$");
 		private static Regex reAckComplex = new Regex(@"^\[(?<payload>.*)\]$");

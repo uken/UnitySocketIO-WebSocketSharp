@@ -41,6 +41,7 @@ namespace SocketIOClient.Messages
 			if (callBack != null)
 				this.AckId = EventMessage.NextAckID;
 
+      #pragma warning disable 0618
 			this.JsonEncodedMessage = new JsonEncodedEventMessage(eventName, jsonObject);
 			this.MessageText = this.Json.ToJsonString();
         }

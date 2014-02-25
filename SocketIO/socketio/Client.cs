@@ -587,6 +587,7 @@ namespace SocketIOClient
 						else
 							this.MessageQueueEmptyEvent.Set();
 					}
+          #pragma warning disable 0168
 					catch(Exception ex)
 					{
 						Trace.WriteLine("The outboundQueue is no longer open...");

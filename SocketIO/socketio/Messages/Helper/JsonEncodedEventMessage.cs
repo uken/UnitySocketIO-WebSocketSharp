@@ -30,6 +30,7 @@ namespace SocketIOClient.Messages
 
         public T GetFirstArgAs<T>()
         {
+            #pragma warning disable 0168
             try
             {
                 var firstArg = this.args.FirstOrDefault();

@@ -16,6 +16,7 @@ namespace SocketIOClient.Messages
         public virtual T Message<T>()
         {
             try { return SimpleJson.SimpleJson.DeserializeObject<T>(this.MessageText); }
+            #pragma warning disable 0168
             catch (Exception ex)
             {
                 // add error logging here
