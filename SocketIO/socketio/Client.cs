@@ -143,15 +143,26 @@ namespace SocketIOClient
 		/// </summary>
 		public void Connect()
 		{
+      System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
+      long padlockTime;
+      long tryTime;
+      long eventResetTime;
+      long handshakeTime;
+      long websocketCreateTime;
+      long websocketConnectTime;
+
 			lock (padLock)
 			{
+        padlockTime = sw.ElapsedMilliseconds;
 				if (!(this.ReadyState == WebSocketState.CONNECTING || this.ReadyState == WebSocketState.OPEN))
 				{
 					try
 					{
+            tryTime = sw.ElapsedMilliseconds;
 						this.ConnectionOpenEvent.Reset();
+            eventResetTime = sw.ElapsedMilliseconds;
 						this.HandShake = this.requestHandshake(uri);// perform an initial HTTP request as a new, non-handshaken connection
-
+            handshakeTime = sw.ElapsedMilliseconds;
 						if (this.HandShake == null || string.IsNullOrEmpty(this.HandShake.SID) || this.HandShake.HadError)
 						{
 							this.LastErrorMessage = string.Format("Error initializing handshake with {0}", uri.ToString());
@@ -177,8 +188,10 @@ namespace SocketIOClient
 							this.wsClient.OnMessage += this.wsClient_MessageReceived;
 							this.wsClient.OnError += this.wsClient_Error;
 							this.wsClient.OnClose += wsClient_Closed;
+              websocketCreateTime = sw.ElapsedMilliseconds;
 
 							this.wsClient.Connect();
+              websocketCreateTime = sw.ElapsedMilliseconds;
 						}
 					}
 					catch (Exception ex)
@@ -188,6 +201,12 @@ namespace SocketIOClient
 					}
 				}
 			}
+      UnityEngine.Debug.Log(padlockTime);
+      UnityEngine.Debug.Log(tryTime);
+      UnityEngine.Debug.Log(eventResetTime);
+      UnityEngine.Debug.Log(handshakeTime);
+      UnityEngine.Debug.Log(websocketCreateTime);
+      UnityEngine.Debug.Log(websocketConnectTime);
 		}
 		public IEndPointClient Connect(string endPoint)
 		{
