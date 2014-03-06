@@ -144,12 +144,12 @@ namespace SocketIOClient
 		public void Connect()
 		{
       System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
-      long padlockTime;
-      long tryTime;
-      long eventResetTime;
-      long handshakeTime;
-      long websocketCreateTime;
-      long websocketConnectTime;
+      long padlockTime = 0;
+      long tryTime = 0;
+      long eventResetTime = 0;
+      long handshakeTime = 0;
+      long websocketCreateTime = 0;
+      long websocketConnectTime = 0;
 
 			lock (padLock)
 			{
@@ -191,7 +191,7 @@ namespace SocketIOClient
               websocketCreateTime = sw.ElapsedMilliseconds;
 
 							this.wsClient.Connect();
-              websocketCreateTime = sw.ElapsedMilliseconds;
+              websocketConnectTime = sw.ElapsedMilliseconds;
 						}
 					}
 					catch (Exception ex)
