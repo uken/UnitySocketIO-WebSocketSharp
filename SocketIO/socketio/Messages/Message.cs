@@ -14,7 +14,7 @@ namespace SocketIOClient.Messages
 	/// </summary>
     public abstract class Message : IMessage
     {
-    #pragma warning disable 0414
+        #pragma warning disable 0414
         private static Regex re = new Regex(@"\d:\d?:\w?:");
         public  static char[] SPLITCHARS = new char[] { ':' };
 
