@@ -8,6 +8,7 @@ namespace SocketIOClient.Messages
 {
     public class JSONMessage : Message
     {
+    #pragma warning disable 0168
         public void SetMessage(object value)
         {
             this.MessageText = SimpleJson.SimpleJson.SerializeObject(value);

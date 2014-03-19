@@ -9,6 +9,7 @@ namespace SocketIOClient.Messages
 {
     public class JsonEncodedEventMessage
     {
+        #pragma warning disable 0168
          public string name { get; set; }
 
          public object[] args { get; set; }

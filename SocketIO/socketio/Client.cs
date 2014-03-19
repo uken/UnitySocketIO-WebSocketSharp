@@ -18,6 +18,7 @@ namespace SocketIOClient
 	/// <exception cref = "ArgumentException">Connection for wss or https urls</exception>  
 	public class Client : IDisposable, SocketIOClient.IClient
 	{
+    #pragma warning disable 0168
 		private Timer socketHeartBeatTimer; // HeartBeat timer 
 		//private Task dequeuOutBoundMsgTask;
 		private Thread dequeuOutBoundMsgTask;
