@@ -609,6 +609,7 @@ namespace SocketIOClient
               while (this.outboundQueue.Count > 0) {
                 messages.Add(this.outboundQueue.Dequeue());
               }
+              this.MessageQueuePendingEvent.Reset();
             } // lock released
 
             foreach (string message in messages) {
@@ -618,7 +619,6 @@ namespace SocketIOClient
             }
 
 						this.MessageQueueEmptyEvent.Set();
-            this.MessageQueuePendingEvent.Reset();
 
             //sleep and wait for more messages
             this.MessageQueuePendingEvent.WaitOne();
