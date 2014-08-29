@@ -66,6 +66,11 @@ namespace SocketIOClient
 		/// </summary>
 		public ManualResetEvent MessageQueueEmptyEvent = new ManualResetEvent(true);
 
+    /// <summary>
+    /// ResetEvent for Outbound MessageQueue Pending Messages Event - there are pending messages ready to send
+    /// </summary>
+    public ManualResetEvent MessageQueuePendingEvent = new ManualResetEvent(false);
+
 		/// <summary>
 		/// Connection Open Event
 		/// </summary>
@@ -320,7 +325,12 @@ namespace SocketIOClient
 		{
 			this.MessageQueueEmptyEvent.Reset();
 			if (this.outboundQueue != null)
-				this.outboundQueue.Enqueue(msg.Encoded);
+      {
+        lock(this.outboundQueue) {
+				  this.outboundQueue.Enqueue(msg.Encoded);
+        }
+        this.MessageQueuePendingEvent.Set();
+      }
 		}
 		
 		public void Send(string msg) {
@@ -331,8 +341,13 @@ namespace SocketIOClient
 		private void Send_backup(string rawEncodedMessageText)
 		{
 			this.MessageQueueEmptyEvent.Reset();
-			if (this.outboundQueue != null)
-				this.outboundQueue.Enqueue(rawEncodedMessageText);
+			if (this.outboundQueue != null) 
+      {
+        lock(this.outboundQueue) {
+				  this.outboundQueue.Enqueue(rawEncodedMessageText);
+        }
+        this.MessageQueuePendingEvent.Set();
+      }
 		}
 
 		/// <summary>
@@ -532,6 +547,7 @@ namespace SocketIOClient
 		// Housekeeping
 		protected void OnHeartBeatTimerCallback(object state)
 		{
+
 			if (this.ReadyState == WebSocketState.OPEN)
 			{
 				IMessage msg = new Heartbeat();
@@ -539,7 +555,11 @@ namespace SocketIOClient
 				{
 					if (this.outboundQueue != null)
 					{
-						this.outboundQueue.Enqueue(msg.Encoded);
+            lock (this.outboundQueue) {
+						  this.outboundQueue.Enqueue(msg.Encoded);
+            }
+            this.MessageQueuePendingEvent.Set();
+
 						if (this.HeartBeatTimerEvent != null)
 						{
 							this.HeartBeatTimerEvent.BeginInvoke(this, EventArgs.Empty, EndAsyncEvent, null);
@@ -575,20 +595,33 @@ namespace SocketIOClient
 		{
 			while (this.outboundQueue != null)
 			{
-				if (this.ReadyState == WebSocketState.OPEN)
+        if (this.ReadyState == WebSocketState.OPEN)
 				{
-					//string msgString;
+
 					try
 					{
-						string msgString = this.outboundQueue.Dequeue();
 
-						//if (this.outboundQueue.TryDequeue(out msgString))
-						if (msgString != null)
-						{
-							this.wsClient.Send(msgString);
-						}
-						else
-							this.MessageQueueEmptyEvent.Set();
+            List<string> messages = new List<string>();
+
+            //lock the queue to operate on it
+            lock(this.outboundQueue)
+            {
+              while (this.outboundQueue.Count > 0) {
+                messages.Add(this.outboundQueue.Dequeue());
+              }
+            } // lock released
+
+            foreach (string message in messages) {
+              if (message != null) {
+                this.wsClient.Send(message);
+              }
+            }
+
+						this.MessageQueueEmptyEvent.Set();
+            this.MessageQueuePendingEvent.Reset();
+
+            //sleep and wait for more messages
+            this.MessageQueuePendingEvent.WaitOne();
 					}
           #pragma warning disable 0168
 					catch(Exception ex)
