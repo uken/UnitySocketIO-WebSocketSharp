@@ -328,8 +328,9 @@ namespace SocketIOClient
       {
         lock(this.outboundQueue) {
 				  this.outboundQueue.Enqueue(msg.Encoded);
+          this.MessageQueuePendingEvent.Set();
         }
-        this.MessageQueuePendingEvent.Set();
+
       }
 		}
 		
@@ -345,8 +346,9 @@ namespace SocketIOClient
       {
         lock(this.outboundQueue) {
 				  this.outboundQueue.Enqueue(rawEncodedMessageText);
+          this.MessageQueuePendingEvent.Set();
         }
-        this.MessageQueuePendingEvent.Set();
+
       }
 		}
 
@@ -557,8 +559,9 @@ namespace SocketIOClient
 					{
             lock (this.outboundQueue) {
 						  this.outboundQueue.Enqueue(msg.Encoded);
+              this.MessageQueuePendingEvent.Set();
             }
-            this.MessageQueuePendingEvent.Set();
+
 
 						if (this.HeartBeatTimerEvent != null)
 						{
