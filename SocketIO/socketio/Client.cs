@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 //using System.Threading.Tasks;
-using System.Linq;
+
 using System.Net;
 using System.Threading;
 using SocketIOClient.Eventing;

@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+
 using System.Text;
 
 namespace SocketIOClient
@@ -38,7 +38,7 @@ namespace SocketIOClient
             if (!string.IsNullOrEmpty(value))
             {
                 string[] items = value.Split(new char[] { ':' });
-                if (items.Count() == 4)
+                if (items.Length == 4)
                 {
                     int hb = 0;
                     int ct = 0;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
+
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -123,7 +123,7 @@ namespace SocketIOClient.Messages
 			
 			if (reMessageType.IsMatch(rawMessage))
 			{
-				char id = rawMessage.First(); 
+				char id = rawMessage[0];
 				switch (id)
 				{
 					case '0':

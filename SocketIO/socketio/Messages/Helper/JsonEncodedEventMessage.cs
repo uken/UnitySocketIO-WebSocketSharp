@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
+
 using System.Text;
 //using SimpleJson.Reflection;
 
@@ -34,7 +34,12 @@ namespace SocketIOClient.Messages
             #pragma warning disable 0168
             try
             {
-                var firstArg = this.args.FirstOrDefault();
+            	T firstArg;
+            	if(this.args.Length == 0) {
+            		firstArg = default(T);
+            	} else {
+            		firstArg = (T)this.args[0];
+            	}
                 if (firstArg != null)
                     return SimpleJson.SimpleJson.DeserializeObject<T>(firstArg.ToString());
             }
@@ -52,7 +57,7 @@ namespace SocketIOClient.Messages
             {
                 items.Add( SimpleJson.SimpleJson.DeserializeObject<T>(i.ToString()) );
             }
-            return items.AsEnumerable();
+            return items;
         }
 
         public string ToJsonString()
